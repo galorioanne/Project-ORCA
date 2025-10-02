@@ -5,7 +5,7 @@ Problem Statement
 These days, despite having the technology, people still struggle to make schedules and plans that don't conflict with others. Also, using multiple platforms or websites to organize workload and flow is quite a hassle. 
 
 Project Objectives
-Project ORCA aims to put all the necessary tools for a better workflow in one program. Users may input their activities on a weekly calendar and it may check if it 
+Project ORCA aims to put all the necessary tools for a better workflow in one program. Users may input their activities on a weekly calendar and it may check for date/time conflictions. 
 
 Planned Features
 Separate pages for tasks and schedules. 
