@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Remove Task</title>
+    </head>
+    <body>
+        <a href="{{ url_for('index') }}">&lt; Go Back</a>
+        <h2>Remove Task</h2>
+        <form action="/removetask_" method="post">
+            <label for="name">Task Name:</label><br>
+            <select name="name" id="name" required>
+                {% for task in data %}
+                    <option value="{{ task.name }}">{{ task.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Remove Task">
+        </form> 
+    </body>
+</html>
