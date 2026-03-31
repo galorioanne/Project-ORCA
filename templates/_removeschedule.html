@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Add Schedule</title>
+    </head>
+    <body>
+        <a href="{{ url_for('index') }}">&lt; Go Back</a>
+        <h2>Remove Schedule</h2>
+        <form action="/removeschedule_" method="post">
+            <label for="name">Schedule Name:</label><br>
+            <select name="name" id="name" required>
+                {% for schedule in data %}
+                    <option value="{{ schedule.name }}">{{ schedule.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Remove Schedule">
+        </form> 
+    </body>
