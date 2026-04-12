@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings | Project CARO</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename=('css/theme-'+settings["theme"]+'.css')) }}">
+</head>
+
+<body style="padding-top: 0px;" class="caro-bg">
+
+  {% include 'navbar.html' %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fadeDiv = document.getElementById('content-area');
+      const links = document.querySelectorAll('a');
+
+      links.forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Only apply to internal links
+          if (link.hostname === window.location.hostname) {
+            e.preventDefault();
+            const targetUrl = link.href;
+
+            // Add the fade-out class
+            fadeDiv.classList.add('fade-out');
+
+            // Wait for the animation to finish (match CSS duration)
+            setTimeout(() => {
+              window.location.href = targetUrl;
+            }, 500);
+          }
+        });
+      });
+    });
+  </script>
+  <div class="m-5 fade-target" id="content-area">
+    <h1 class="text-center caro-head">Settings</h1>
+    <div class="card w-50 mx-auto bg-caro-card">
+
+      <form class="card-body" action="{{ url_for('settings_', settings=settings) }}" method="post">
+
+
+        <p class="form-label text-pre">Theme:</p>
+        <select name="theme" id="theme" class="form-control form-select w-50 rounded-3 me-3 caro-form" required>
+          {% for key in themes %}
+          <option {% if key==settings["theme"]%}selected{% endif %} value="{{ key }}">{{ themes[key] }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="Save Changes" class="btn btn-caro-primary mt-2">
+    </div>
+    </form>
+  </div>
+  </div>
+</body>
+
+</html>

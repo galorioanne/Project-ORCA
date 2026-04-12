@@ -12,7 +12,7 @@ import humanize
 app = Flask(__name__)
 
 data_template = {
-    "tasks": [], "schedules": []}
+    "tasks": [], "schedules": [],"settings":{"theme":"blue","name":""}}
 
 
 def due_time_task(due_date): # Function to calculate the time remaining until the task is due or how overdue it is
@@ -108,7 +108,9 @@ def get_schedules():
             _schedule = json.load(file)
             if _schedule is None:
                 _schedule = data_template
-            schedule = _schedule.get("schedules", [])
+                schedule = _schedule.get("schedules", [])
+            else:
+                schedule = _schedule.get("schedules", [])
             if not schedule or schedule == [{}]: # Handle empty list or list with empty dict
                 schedule = []
             else:
@@ -122,16 +124,59 @@ def get_schedules():
             schedule = _schedule.get("schedules", [])
     return schedule
 
+def get_settings():
+    if Path('data/data.json').is_file():
+        with open('data/data.json', 'r') as file:
+            _settings = json.load(file)
+            if _settings is None:
+                _settings = data_template
+                settings = _settings.get("settings", {})
+            else:
+                if "settings" in _settings:
+                    settings = _settings.get("settings", [])
+                else:
+                    with open("data/data.json", "w") as file:
+                        json.dump(data_template, file, indent=3)
+                    with open('data/data.json', 'r') as file:
+                        _settings = json.load(file)
+                        if _settings is None:
+                            _settings = data_template
+                            settings = _settings.get("settings", {})
+                        else:
+                            settings = _settings.get("settings", [])
+
+    else:
+        with open("data/data.json", "w") as file:
+            json.dump(data_template, file, indent=3)
+        with open('data/data.json', 'r') as file:
+            _settings = json.load(file)
+            if _settings is None:
+                _settings = data_template
+                settings = _settings.get("settings", {})
+            else:
+                settings = _settings.get("settings", [])
+    return settings
+
 @app.route('/')
 def index():
-    return render_template('index.html', tasks=get_tasks(), schedules=get_schedules(), due_time_task=due_time_task, due_time_schedule=due_time_schedule)
+    print(get_settings())
+    return render_template('index.html', tasks=get_tasks(), schedules=get_schedules(), settings=get_settings(), due_time_task=due_time_task, due_time_schedule=due_time_schedule)
+
+@app.route('/viewtasks', methods=['GET'])
+def viewtasks():
+    return render_template('task.html',tasks=get_tasks(), settings=get_settings(),due_time_task=due_time_task)
+
+@app.route('/viewschedules', methods=['GET'])
+def viewschedules():
+    return render_template('schedule.html',schedules=get_schedules(), settings=get_settings(),due_time_schedule=due_time_schedule)
+
 
 
 
 # == ADD TASK ==
 @app.route('/_addtask', methods=['GET'])
 def _addtask():
-    return render_template('addtask.html' , message=request.args.get('message', ''))
+    return render_template('addtask.html' , message=request.args.get('message', ''), settings=get_settings())
 
 @app.route('/addtask_', methods=['POST'])
 def addtask_():
@@ -157,14 +202,14 @@ def addtask_():
     with open('data/data.json', 'w') as file:
         json.dump(data, file, indent=3)
 
-    return redirect(url_for("index")) 
+    return redirect(url_for("viewtasks")) 
 
 
 
 # == REMOVE TASK ==
 @app.route('/_removetask', methods=['GET'])
 def _removetask():
-    return render_template('removetask.html', data=get_tasks())
+    return render_template('removetask.html', data=get_tasks(), settings=get_settings())
 
 @app.route('/removetask_', methods=['POST'])
 def removetask_():
@@ -177,7 +222,7 @@ def removetask_():
         data["tasks"] = task
     with open('data/data.json', 'w') as file:
         json.dump(data, file, indent=3)
-    return redirect(url_for("index"))
+    return redirect(url_for("viewtasks"))
 
 
 
@@ -189,7 +234,7 @@ def _edittask():
     task = [t for t in get_tasks() if t['name'] == task_name]
     if task:
         task = task[0]
-    return render_template('edittask.html', task=task, message=request.args.get('message', ''))
+    return render_template('edittask.html', task=task, settings=get_settings(), message=request.args.get('message', ''))
 
 @app.route('/edittask_', methods=['POST'])
 def edittask_():
@@ -217,21 +262,21 @@ def edittask_():
 
     with open('data/data.json', 'w') as file:
         json.dump(data, file, indent=3)
-    return redirect(url_for("index"))
+    return redirect(url_for("viewtasks"))
 
 
 
 # == ADD SCHEDULE ==
 @app.route('/_addschedule', methods=['GET'])
 def _addschedule():
-    return render_template('addschedule.html', message=request.args.get('message', ''))
+    return render_template('addschedule.html', message=request.args.get('message', ''), settings=get_settings())
 
 @app.route('/addschedule_', methods=['POST'])
 def addschedule_():
     schedule = get_schedules()
     
     if request.form['end_time'] < request.form['start_time']:
-        return redirect(url_for('_addschedule', message="ERROR: End time must be after start time."))
+        return redirect(url_for('_addschedule', message="ERROR: End time must be after start time."), settings=get_settings())
     new_schedule = { # Creates new schedule with the name and datetime from the form
         "name": request.form['name'],
         "start_time": datetime.fromisoformat(request.form['start_time']),
@@ -241,7 +286,7 @@ def addschedule_():
 
     for s in schedule:
         if s['name'] == new_schedule['name']:
-            return redirect(url_for('_addschedule', message="ERROR: Schedule with that name already exists."))
+            return redirect(url_for('_addschedule', message="ERROR: Schedule with that name already exists.", settings=get_settings()))
 
     schedule = schedule + [new_schedule]
     for s in schedule:
@@ -253,14 +298,14 @@ def addschedule_():
     with open('data/data.json', 'w') as file:
         json.dump(data, file, indent=3)
 
-    return redirect(url_for("index"))
+    return redirect(url_for("viewschedules"))
 
 
 
 # == REMOVE SCHEDULE ==
 @app.route('/_removeschedule', methods=['GET'])
 def _removeschedule():
-    return render_template('removeschedule.html', data=get_schedules())
+    return render_template('removeschedule.html', data=get_schedules(), settings=get_settings())
 
 @app.route('/removeschedule_', methods=['POST'])
 def removeschedule_():
@@ -274,7 +319,7 @@ def removeschedule_():
         data["schedules"] = schedule
     with open('data/data.json', 'w') as file:
         json.dump(data, file, indent=3)
-    return redirect(url_for("index"))
+    return redirect(url_for("viewschedules"))
 
 
 
@@ -285,7 +330,7 @@ def _editschedule():
     schedule = [s for s in get_schedules() if s['name'] == schedule_name]
     if schedule:
         schedule = schedule[0]
-    return render_template('editschedule.html', schedule=schedule, message=request.args.get('message', ''))
+    return render_template('editschedule.html', schedule=schedule, message=request.args.get('message', ''), settings=get_settings())
 
 @app.route('/editschedule_', methods=['POST'])
 def editschedule_():
@@ -297,11 +342,11 @@ def editschedule_():
             if not s['name'] == request.args.get('schedule_name'):
                 counter += 1
             if counter == 1:
-                return redirect(url_for('_editschedule', schedule_name=request.args.get('schedule_name'), message="ERROR: Schedule with that name already exists."))
+                return redirect(url_for('_editschedule', schedule_name=request.args.get('schedule_name'), message="ERROR: Schedule with that name already exists."), settings=get_settings())
     for s in schedule:
         if s['name'] == request.args.get('schedule_name'):
             if request.form['end_time'] < request.form['start_time']:
-                return redirect(url_for('_editschedule', schedule_name=s['name'], message="ERROR: End time must be after start time."))
+                return redirect(url_for('_editschedule', schedule_name=s['name'], message="ERROR: End time must be after start time."), settings=get_settings())
             s['name'] = request.form['name']
             s['start_time'] = datetime.fromisoformat(request.form['start_time'])
             s['end_time'] = datetime.fromisoformat(request.form['end_time'])
@@ -314,6 +359,25 @@ def editschedule_():
         data["schedules"] = schedule
 
 
+    with open('data/data.json', 'w') as file:
+        json.dump(data, file, indent=3)
+    return redirect(url_for("viewschedules"))
+
+
+# == SETTINGS ==
+@app.route('/_settings', methods=['GET'])
+def _settings():
+    themes = {"blue":"Blue","contrast":"Contrast"}
+    return render_template('settings.html', data=get_schedules(), settings=get_settings(),themes=themes)
+
+@app.route('/settings_', methods=['POST'])
+def settings_():
+    settings = {
+        "theme":request.form["theme"]
+    }
+    with open('data/data.json', 'r') as file:
+        data = json.load(file)
+        data["settings"] = settings
     with open('data/data.json', 'w') as file:
         json.dump(data, file, indent=3)
     return redirect(url_for("index"))

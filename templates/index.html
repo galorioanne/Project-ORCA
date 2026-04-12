@@ -1,155 +1,61 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Caro · Home Page</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-  </head>
 
-<body style="padding-top: 0px;">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home Page | Project CARO</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename=('css/theme-'+settings["theme"]+'.css')) }}">
+</head>
 
+<body style="padding-top: 0px;" class="caro-bg">
+  {% include 'navbar.html' %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fadeDiv = document.getElementById('content-area');
+      const links = document.querySelectorAll('a');
 
+      links.forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Only apply to internal links
+          if (link.hostname === window.location.hostname) {
+            e.preventDefault();
+            const targetUrl = link.href;
 
+            // Add the fade-out class
+            fadeDiv.classList.add('fade-out');
 
-<div class="m-5">
-<div class="text-center">
-  <div class="alert alert-caro-title"><strong>Task List</strong>
-</div>
-        <a class="btn btn-caro-primary mx-1" href="{{ url_for('_addtask') }}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-        </svg> Create Task
-      </a>
-      
-      {% if not tasks == [] %}
-      <a class="btn btn-caro-tertiary mx-1" href="{{ url_for('_removetask') }}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-        </svg> Remove Task
-      </a>
-      {% else %}
-            <a class="btn btn-secondary disabled">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-        </svg> Remove Task
-      </a>
-      {% endif %}
-</div>
-  <hr>
+            // Wait for the animation to finish (match CSS duration)
+            setTimeout(() => {
+              window.location.href = targetUrl;
+            }, 500);
+          }
+        });
+      });
+    });
+  </script>
+  
+  <div class="m-5 fade-target" id="content-area">
+    <div class="text-center">
+      <h1>Welcome!</h1>
+      <p>What would you like to do today?</p>
 
-
-    {% if tasks == [] %}
-    <div class="text-center mt-5">
-      <h4 class="text-secondary">No tasks yet. Create one to get started!</h4>
-    </div>
-    {% else %}
-    <div class="container-fluid">
-      <div class="row gap-3">
-
-        {% for task in tasks %}
-        <div class="card mt-1 bg-caro-card" style="width: 17.71vw; height: 20rem;">
-          <div class="card-header bg-caro-card">
-            <h5 class="card-title"><br>{{ task.name }}</h5>
+      <div class="container col-4">
+        <div class="row ">
+          <div class="col">
+            <a class="btn btn-caro-home" href="{{ 'viewtasks' }}">View Tasks</a>
           </div>
-          <div class="card-body h-100 overflow-auto bg-caro-card" style="max-height: 20rem;">
-            <p class="card-text text-secondary">
-              {{ task.datetime.strftime("%B %d, %Y at %I:%M %p") }}<br>
-              {{ due_time_task(task.datetime) }}
-              {% if task.status %} · Completed
-              {% endif %}
-            </p>
-            <p class="card-text multiline-text">{{ task.description }}
-            </p>
-          </div>
-
-
-          <div class="card-footer text-center bg-caro-card">
-            <a class="btn btn-caro-primary" href="{{ url_for('_edittask', task_name=task.name) }}"">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-            </svg> Edit Task</a>
+          <div class="col">
+            <a class="btn btn-caro-home" href="{{ 'viewschedules' }}">View Schedules</a>
           </div>
         </div>
-        {% endfor %}
       </div>
-      {% endif %}
 
+      
 
+      <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
 
-
-
-
-      <!-- TERRITORY OF SCHEDULES -->
-      <br><br><br><br><br>
-      <div class="text-center">
-  <div class="alert alert-caro-title"><strong>Schedule List</strong>
-</div>
-
-      <a class="btn btn-caro-primary mx-1" href="{{ url_for('_addschedule') }}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-        </svg> Create Schedule
-      </a>
-
-      {% if not schedules == [] %}
-      <a class="btn btn-caro-tertiary mx-1" href="{{ url_for('_removeschedule') }}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-        </svg> Remove Schedule
-      </a>
-      {% else %}
-            <a class="btn btn-secondary disabled">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-        </svg> Remove Schedule
-      </a>
-      {% endif %}
-  </div>
-  <hr>
-
-    {% if schedules == [] %}
-    <div class="text-center mt-5">
-      <h4 class="text-secondary">No schedules yet. Create one to get started!</h4>
-    </div>
-    {% else %}
-    <div class="card w-auto bg-caro-card">
-        <table class="m-5 w-auto rounded table-caro-sched-table-lines">
-            <thead>
-                <tr>
-                    <th scope="col" class="text-center">Details</th>
-                    <th scope="col" class="text-center">Start/End Date & Time</th>
-                    <th scope="col" class="text-center">Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                {% for s in schedules %}
-                    <tr>
-                        <td><br><p class="no-pad"><strong>{{ s.name }}</strong></p><p class="card-text multiline-text indented-block">{{ s.description }}
-            </p></td>
-                        {% if s.start_time.date() == s.end_time.date() %}
-                            <td class="text-center">{{ s.start_time.strftime("%B %d, %Y") }} · {{ s.start_time.strftime("%I:%M %p") }}<br>to<br>{{ s.end_time.strftime("%I:%M %p") }}</td>
-                        {% else %}
-                            <td class="text-center">{{ s.start_time.strftime("%B %d, %Y at %I:%M %p") }}<br>to<br>{{ s.end_time.strftime("%B %d, %Y at %I:%M %p") }}</td>
-                        {% endif %}
-
-                        <td class="text-center">{{ due_time_schedule(s.start_time, s.end_time) }}</td>
-                        <td class="text-end"><a class="btn btn-caro-primary" href="{{ url_for('_editschedule', schedule_name=s.name) }}"">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-            </svg> Edit Schedule</a></td>
-                    </tr>
-                    
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
-</div>
-
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  </body>
 </html>
