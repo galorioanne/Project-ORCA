@@ -9,11 +9,7 @@ communication and planning your week easier!
 - Make your schedule
 ### How To Run
 - Run caro.exe
-- CTRL+CLICK `http://127.0.0.1:5000/` or copy-paste to browser of choice
-### How To Exit
-- Close browser
-- Return to console/Command Prompt
-- Click CTRL+C 
+- That's it!
 
 ### Contributors
 - Student 1: Lilianne S. Salorio (Program, design, concept)

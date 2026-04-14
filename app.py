@@ -1,6 +1,9 @@
 from io import UnsupportedOperation
 
+
 from flask import Flask, render_template, request, redirect, url_for
+from flaskwebgui import FlaskUI 
+
 import json
 from datetime import datetime, date, timedelta
 from pathlib import Path
@@ -383,4 +386,5 @@ def settings_():
     return redirect(url_for("index"))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    FlaskUI(app=app, server="flask", fullscreen=True).run()
+    # app.run(debug=True)

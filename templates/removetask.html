@@ -32,6 +32,21 @@
           }
         });
       });
+
+      const form = document.getElementById('main-form');
+
+      form.addEventListener('submit', function(e) {
+          // 1. Prevent immediate submission
+          e.preventDefault();
+
+          // 2. Trigger the exit animation (fade out the content area)
+          fadeDiv.classList.add('fade-out');
+
+          // 3. Wait for the animation to finish, then submit the form
+          setTimeout(() => {
+              form.submit();
+          }, 500);
+      });
     });
   </script>
   <div class="m-5 fade-target" id="content-area">
@@ -41,11 +56,10 @@
         <path fill-rule="evenodd"
           d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
       </svg>
-      Return
     </a>
     <h1 class="text-center">Remove Task</h1>
     <div class="card w-50 mx-auto bg-caro-card">
-      <form class="card-body" action="{{ url_for('removetask_') }}" method="post">
+      <form class="card-body" action="{{ url_for('removetask_') }}" method="post" id="main-form">
         <label for="name">Task Name:</label><br>
 
         <div class="input-group mb-3">

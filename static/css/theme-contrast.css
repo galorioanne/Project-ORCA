@@ -38,6 +38,11 @@
 
 
 
+.form-control:focus {
+    box-shadow: none;
+    outline: 0 none;
+}
+
 .caro-card-gap {
   display: flex;
   gap: .7vw;     /* Recreates .gap-3 (1rem) */
@@ -82,7 +87,23 @@ body {
 }
 
 .return-pad {
+  position: absolute;
+  top: -20px;
   margin-left: 19rem;
+  text-decoration: none;
+  color: var(--text-head);
+  font-size: 50px;
+  z-index: 8000;
+  transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+.return-pad:hover {
+  transform: scale(1.2) translateX(-10px);
+}
+
+.return-pad:active, return-pad:focus {
+  transform: scale(1.2) translateX(-15px);
+  opacity: 0;
 }
 
 .indented-block {
@@ -109,11 +130,11 @@ body {
 }
 
 .settings {
-  transition: transform 0.1s ease, background-color 0.1s ease
+  transition: transform 0.3s ease, background-color 0.3s ease
 }
 
 .settings:hover {
-  transform: scale(1.1);
+  transform: rotate(-20deg) scale(1.2);
 }
 
 .caro-bg {
@@ -128,7 +149,11 @@ body {
     
 }
 
-.btn-caro-primary:hover, .btn-caro-primary:active {
+.btn-caro-primary:hover,
+.btn-caro-primary:active,
+.btn-caro-primary.active,
+.btn-custom.active,
+.show > .btn-caro-primary.dropdown-toggle {
   background-color: color-mix(in srgb, var(--primary-bg), white 20%);
   color: var(--primary-text);
   transform: scale(1.1)
@@ -162,7 +187,7 @@ body {
     border: 1px solid var(--homebtn-text-border);
     width: 200px;
     height: 200px;
-    transition: transform 0.1s ease, background-color 0.1s ease
+    transition: transform 0.3s ease, background-color 0.3s ease
 }
 
 .btn-caro-home:hover, .btn-caro-home:active {
@@ -208,17 +233,19 @@ body {
   padding-top: 1rem;
 }
 
-.caro-form, .caro-form:focus {
+.caro-form {
   background-color: var(--form-bg);
+  border-color: var(--form-border);
+  color: var(--form-text);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.caro-form:focus, .caro-form:hover {
+  background-color: color-mix(in srgb, var(--form-bg), black 5%);;
   border-color: var(--form-border);
   color: var(--form-text);
 }
 
-.caro-form:hover {
-  background-color: var(--form-bg);
-  border-color: var(--form-border);
-  color: var(--form-text);
-}
 
 .caro-form:checked {
   background-color: var(--form-checked);

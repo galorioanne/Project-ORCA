@@ -1,62 +1,25 @@
 {
    "tasks": [
       {
-         "name": "1212",
-         "datetime": "2026-04-24T21:20:00",
-         "description": "",
+         "name": "English Performance",
+         "datetime": "2026-04-22T09:30:00",
+         "description": "PREPARE YOUR UHHHH, UHMMM, PREPARE YOUR UHHH, YOUR,,, UHM,,,, COSTUME YEAH!! DELIBERY PLEASE",
          "status": false
       },
       {
-         "name": "IMPROVIZATION",
-         "datetime": "2026-05-12T21:20:00",
-         "description": "",
+         "name": "Do your algebra",
+         "datetime": "2026-04-14T21:00:00",
+         "description": "you can see it in the alge gc, maam sent it ig, alsooo you have it as a tab group in chrome ty",
          "status": false
       },
       {
-         "name": "Sing Waitress",
-         "datetime": "2026-05-13T21:20:00",
-         "description": "FOLLOW ur dreams! (i lit only have nightmares.)",
-         "status": true
-      },
-      {
-         "name": "123123",
-         "datetime": "2026-04-17T21:20:00",
-         "description": "",
-         "status": false
-      },
-      {
-         "name": "asd asd ",
-         "datetime": "2026-04-15T21:20:00",
-         "description": "",
-         "status": false
-      },
-      {
-         "name": "asdasd awds",
-         "datetime": "2026-04-22T12:56:00",
-         "description": "",
-         "status": false
-      },
-      {
-         "name": "12",
-         "datetime": "2026-04-08T13:05:00",
-         "description": "",
-         "status": false
-      },
-      {
-         "name": "murder 50 people.",
-         "datetime": "2026-04-25T13:08:00",
-         "description": "this is a one up for the last time I murdered 10 people",
+         "name": "message to lilliane",
+         "datetime": "2064-12-14T21:16:00",
+         "description": "hi. ignore the other tasks. ty.",
          "status": false
       }
    ],
-   "schedules": [
-      {
-         "name": "30/9",
-         "start_time": "2026-04-11T12:55:00",
-         "end_time": "2026-04-18T12:55:00",
-         "description": ""
-      }
-   ],
+   "schedules": [],
    "settings": {
       "theme": "blue"
    }
