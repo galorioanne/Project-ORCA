@@ -5,51 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Settings | Project CARO</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename=('css/theme-'+settings["theme"]+'.css')) }}">
+  <link rel="icon" type="image/x-icon" href="../static/icon.ico">
+  <link rel="stylesheet" href="{{ url_for('themes', filename=("theme-"+settings["theme"]+'.css')) }}">
 </head>
 
 <body style="padding-top: 0px;" class="caro-bg">
-
   {% include 'navbar.html' %}
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const fadeDiv = document.getElementById('content-area');
-      const links = document.querySelectorAll('a');
-
-      links.forEach(link => {
-        link.addEventListener('click', (e) => {
-          // Only apply to internal links
-          if (link.hostname === window.location.hostname) {
-            e.preventDefault();
-            const targetUrl = link.href;
-
-            // Add the fade-out class
-            fadeDiv.classList.add('fade-out');
-
-            // Wait for the animation to finish (match CSS duration)
-            setTimeout(() => {
-              window.location.href = targetUrl;
-            }, 500);
-          }
-        });
-      });
-
-      const form = document.getElementById('main-form');
-
-      form.addEventListener('submit', function(e) {
-          // 1. Prevent immediate submission
-          e.preventDefault();
-
-          // 2. Trigger the exit animation (fade out the content area)
-          fadeDiv.classList.add('fade-out');
-
-          // 3. Wait for the animation to finish, then submit the form
-          setTimeout(() => {
-              form.submit();
-          }, 500);
-      });
-    });
-  </script>
+  <script src="static/formtransitions.js"></script>
   <div class="m-5 fade-target" id="content-area">
     <h1 class="text-center caro-head">Settings</h1>
     <div class="card w-50 mx-auto bg-caro-card">
@@ -57,12 +19,44 @@
       <form class="card-body" action="{{ url_for('settings_', settings=settings) }}" method="post" id="main-form">
 
 
-        <p class="form-label text-pre">Theme:</p>
-        <select name="theme" id="theme" class="form-control form-select w-50 rounded-3 me-3 caro-form" required>
+        <p class="form-label text-pre"> Theme:</p>
+        <select name="theme" id="theme" class="form-control form-select rounded-3 me-3 caro-form" required>
           {% for key in themes %}
           <option {% if key==settings["theme"]%}selected{% endif %} value="{{ key }}">{{ themes[key] }}</option>
           {% endfor %}
         </select>
+          <p class="form-label text-pre mt-4"> Date & Time Format:</p>
+          <div class="input-group mb-3">
+
+          <select name="date" class="form-control caro-form form-select" required>
+            <option value="%A, %B %d, %Y" class="" {% if settings["date"] == "%A, %B %d, %Y" %}selected{% endif %}>Full Date (Weekday Day, Month, YYYY)</option>
+            <option value="%d-%b-%Y" class="" {% if settings["date"] == "%d-%b-%Y" %}selected{% endif %}>Abbrieviated Date (dd-Mon-YYYY)</option>
+            <option value="%d/%m/%Y" class="" {% if settings["date"] == "%d/%m/%Y" %}selected{% endif %}>Short Date (dd/mm/YY)</option>
+          </select>
+
+          <select name="time" class="form-control caro-form form-select" required>
+            <option value="%I:%M %p" class="" {% if settings["time"] == "%I:%M %p" %}selected{% endif %}>Standard Time (12:00 PM)</option>
+            <option value="%H:%M" class="" {% if settings["time"] == "%H:%M" %}selected{% endif %}>Military Time (24:00)</option>
+          </select>        </div>
+          <div class="text-center">
+          <label for="range4" class="form-label">Cards Per Row: </label><strong>
+<output for="range4" id="rangeValue" aria-hidden="true"></output></strong><br>
+<input type="range" class="caro-form-range" min="1" max="5" value="{{ settings['cardperrow'] }}" id="range4" name="cardperrow">
+</div>
+
+<script>
+  const rangeInput = document.getElementById('range4');
+  const rangeOutput = document.getElementById('rangeValue');
+
+  rangeOutput.textContent = rangeInput.value;
+
+  rangeInput.addEventListener('input', function() {
+    rangeOutput.textContent = this.value;
+  });
+
+  
+</script>
+
                 <div class="text-center">
         <input type="submit" value="Save Changes" class="btn btn-caro-primary mt-2" style="width: 200px">
         </div>

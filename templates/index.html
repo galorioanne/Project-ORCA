@@ -5,35 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Home Page | Project CARO</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename=('css/theme-'+settings["theme"]+'.css')) }}">
+  <link rel="icon" type="image/x-icon" href="../static/icon.ico">
+  <link rel="stylesheet" href="{{ url_for('themes', filename=("theme-"+settings["theme"]+'.css')) }}">
 </head>
 
 <body style="padding-top: 0px;" class="caro-bg">
   {% include 'navbar.html' %}
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const fadeDiv = document.getElementById('content-area');
-      const links = document.querySelectorAll('a');
-
-      links.forEach(link => {
-        link.addEventListener('click', (e) => {
-          // Only apply to internal links
-          if (link.hostname === window.location.hostname) {
-            e.preventDefault();
-            const targetUrl = link.href;
-
-            // Add the fade-out class
-            fadeDiv.classList.add('fade-out');
-
-            // Wait for the animation to finish (match CSS duration)
-            setTimeout(() => {
-              window.location.href = targetUrl;
-            }, 500);
-          }
-        });
-      });
-    });
-  </script>
+  <script src="static/transitions.js"></script>
   
   <div class="m-5 fade-target" id="content-area">
     <div class="text-center">
@@ -42,10 +20,10 @@
 
       <div class="container d-flex justify-content-center align-items-center">
         <div class="row ">
-          <div class="col">
+          <div class="col mt-2">
             <a class="btn btn-caro-home" href="{{ 'viewtasks' }}">View Tasks</a>
           </div>
-          <div class="col">
+          <div class="col mt-2">
             <a class="btn btn-caro-home" href="{{ 'viewschedules' }}">View Schedules</a>
           </div>
         </div>

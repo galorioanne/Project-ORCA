@@ -5,21 +5,21 @@
       <ul class="navbar-nav mx-2">
         <li class="nav-item mx-2">
           {% if request.path == '/' %}
-          <a class="nav-link caro-navbar-active mx-3">Home</a>
+          <a class="nav-link caro-navbar-active mx-3" id="active">Home</a>
           {% else %}
           <a class="nav-link caro-navbar mx-3 caro-navbar-link" href="{{ url_for('index') }}" onclick="fadeOut(event)">Home</a>
           {% endif %}
         </li>
         <li class="nav-item mx-2">
           {% if request.path == '/viewtasks' %}
-          <a class="nav-link caro-navbar-active mx-3">Tasks</a>
+          <a class="nav-link caro-navbar-active mx-3" id="active">Tasks</a>
           {% else %}
           <a class="nav-link caro-navbar mx-3 caro-navbar-link" href="{{ url_for('viewtasks') }}" onclick="fadeOut(event)">Tasks</a>
           {% endif %}
         </li>
         <li class="nav-item mx-2">
           {% if request.path == '/viewschedules' %}
-          <a class="nav-link caro-navbar-active mx-3">Schedules</a>
+          <a class="nav-link caro-navbar-active mx-3" id="active">Schedules</a>
           {% else %}
           <a class="nav-link caro-navbar mx-3 caro-navbar-link" href="{{ url_for('viewschedules') }}" onclick="fadeOut(event)">Schedules</a>
           {% endif %}

@@ -1,32 +1,46 @@
-from io import UnsupportedOperation
-
-
-from flask import Flask, render_template, request, redirect, url_for
+# Web Framework
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flaskwebgui import FlaskUI 
 
+# JSON Handling
 import json
-from datetime import datetime, date, timedelta
 from pathlib import Path
-from jinja2 import UndefinedError
-import os
-import sys
+
+# datetime Handling
+from datetime import datetime, date, timedelta
 import humanize
+
+# System Handling
+import sys
+import os
+
+DEBUG_MODE = False
+
+
+
+
 
 app = Flask(__name__)
 
-data_template = {
-    "tasks": [], "schedules": [],"settings":{"theme":"blue","name":""}}
+data_template = { "tasks": [], "schedules": [], "settings": { "theme": "contrast", "date": "%d-%b-%Y", "time": "%I:%M %p", "cardperrow": "5" } }
 
 
-def due_time_task(due_date): # Function to calculate the time remaining until the task is due or how overdue it is
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+# Due date and time for TASKS
+def due_time_task(due_date):
     now = datetime.now()
     delta = due_date - now
 
-    # Check if the due date is in the past
     if delta.total_seconds() < 0:
-        return f"Was due {humanize.naturaltime(now - due_date)}" # Leverage humanize for "ago" text
+        return f"Was due {humanize.naturaltime(now - due_date)}"
 
-    # Check if less than one day ahead
     if delta < timedelta(days=1):
         hours = delta.seconds // 3600
         minutes = (delta.seconds % 3600) // 60
@@ -36,40 +50,45 @@ def due_time_task(due_date): # Function to calculate the time remaining until th
             return f"Due in {minutes}m"
         else:
             return "Due now"
-    # One day or more ahead
+
     else:
         days = delta.days
         if days == 1:
             return "Due in 1 day"
         else:
-            # You could add logic for weeks/months here if needed
             return f"Due in {days} days"
     
 
-def due_time_schedule(start_time, end_time): # Function to calculate the time remaining until the schedule starts or ends, or how overdue it is
+# Due date and time for SCHEDULES
+def due_time_schedule(start_time, end_time):
     now = datetime.now()
     if now < start_time:
         diff = start_time - now
         if diff.days > 0:
-            return f"Starts in {diff.days}d" #--------
+            return f"Starts in {diff.days}d" 
         hours = diff.seconds // 3600
         minutes = (diff.seconds % 3600) // 60
-        return f"Starts in {hours}h {minutes}m" #--------
+        return f"Starts in {hours}h {minutes}m" 
     elif start_time <= now <= end_time:
         diff = end_time - now
         if diff.days > 0:
-            return f"Ends in {diff.days}d" #--------
+            return f"Ends in {diff.days}d" 
         hours = diff.seconds // 3600
         minutes = (diff.seconds % 3600) // 60
-        return f"Ends in {hours}h {minutes}m" #--------
+        return f"Ends in {hours}h {minutes}m" 
     else:
         diff = now - end_time
         if diff.days > 0:
-            return f"Ended {diff.days}d ago" #--------
+            return f"Ended {diff.days}d ago" 
         hours = diff.seconds // 3600
         minutes = (diff.seconds % 3600) // 60
-        return f"Ended {-hours}h {minutes}m ago" #--------
+        return f"Ended {-hours}h {minutes}m ago" 
 
+# Since JSON is ANNOYING and DOESNT SUPPORT DATE TIME OBJECTS,
+# IM forced to LEARN THIS so that I CAN USE DATETIME OBJECTS
+# WITH JSON BECAUSE OF HOW ANNOYING IT IS.
+# SO I HAVE TO CONVERT ISO FORMATS EVERY SINGLE TIME I WANT TO
+# ACCESS MY JSON FILE.
 def convert_to_iso_format(data):
     for task in data['tasks']:
         if 'datetime' in task and isinstance(task['datetime'], datetime):
@@ -79,7 +98,7 @@ def convert_to_iso_format(data):
                 pass
 
 def parse_iso_date(date_str):
-    if not date_str: # Handle None or empty string
+    if not date_str:
         return None
     try:
         return datetime.fromisoformat(date_str)
@@ -370,13 +389,25 @@ def editschedule_():
 # == SETTINGS ==
 @app.route('/_settings', methods=['GET'])
 def _settings():
-    themes = {"blue":"Blue","contrast":"Contrast"}
+    themes = {}
+
+    theme_folder = Path('themes/')
+    for file in theme_folder.iterdir():
+        if file.is_file():
+            with open(file, 'r') as f:
+                f.readline()  # Skip first line
+                second_line = f.readline()
+                themes[file.stem.replace("theme-", "")] = second_line.strip().replace("/*", "").replace("*/", "")
+    print(themes)
     return render_template('settings.html', data=get_schedules(), settings=get_settings(),themes=themes)
 
 @app.route('/settings_', methods=['POST'])
 def settings_():
     settings = {
-        "theme":request.form["theme"]
+        "theme":request.form["theme"],
+        "date":request.form["date"],
+        "time":request.form["time"],
+        "cardperrow":request.form["cardperrow"]
     }
     with open('data/data.json', 'r') as file:
         data = json.load(file)
@@ -385,6 +416,21 @@ def settings_():
         json.dump(data, file, indent=3)
     return redirect(url_for("index"))
 
+@app.route('/themes/<path:filename>')
+def themes(filename):
+    return send_from_directory('themes', filename)
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    FlaskUI(app=app, server="flask", fullscreen=True).run()
-    # app.run(debug=True)
+    if DEBUG_MODE == True:
+        app.run(debug=True)
+    else:
+        FlaskUI(app=app, server="flask", fullscreen=True).run()

@@ -1,26 +1,10 @@
 {
-   "tasks": [
-      {
-         "name": "English Performance",
-         "datetime": "2026-04-22T09:30:00",
-         "description": "PREPARE YOUR UHHHH, UHMMM, PREPARE YOUR UHHH, YOUR,,, UHM,,,, COSTUME YEAH!! DELIBERY PLEASE",
-         "status": false
-      },
-      {
-         "name": "Do your algebra",
-         "datetime": "2026-04-14T21:00:00",
-         "description": "you can see it in the alge gc, maam sent it ig, alsooo you have it as a tab group in chrome ty",
-         "status": false
-      },
-      {
-         "name": "message to lilliane",
-         "datetime": "2064-12-14T21:16:00",
-         "description": "hi. ignore the other tasks. ty.",
-         "status": false
-      }
-   ],
+   "tasks": [],
    "schedules": [],
    "settings": {
-      "theme": "blue"
+      "theme": "contrast",
+      "date": "%d-%b-%Y",
+      "time": "%I:%M %p",
+      "cardperrow": "5"
    }
 }
