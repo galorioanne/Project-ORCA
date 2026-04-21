@@ -2,7 +2,7 @@
    "tasks": [],
    "schedules": [],
    "settings": {
-      "theme": "contrast",
+      "theme": "blue",
       "date": "%d-%b-%Y",
       "time": "%I:%M %p",
       "cardperrow": "5"
